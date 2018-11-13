@@ -1,50 +1,115 @@
 class BinaryTree {
-  constructor(key = null, value = null) {
-    this.parent = null;
+  constructor(key = null, value = null, parent = null) {
+    this.parent = parent;
     this.key = key;
     this.value = value;
     this.right = null;
     this.left = null;
   }
 
+  // insert(key, value) {
+  //   if(!this.key) {
+  //     this.key = key;
+  //     this.value = value;
+  //   } else if(this.key <= key){
+  //     if(!this.right) {
+  //       this.right = new BinaryTree(key, value);
+  //     } else {
+  //     this.right.insert(key, value);
+  //     }
+  //   } else if(this.key >= key) {
+  //     if(!this.left) {
+  //       this.left = new BinaryTree(key, value);
+  //     } else{
+  //     this.left.insert(key, value);
+  //     }
+  //   }
+  // }
+
   insert(key, value) {
-    if(!this.key) {
-      this.key = key;
-      this.value = value;
-    } else if(this.key <= key){
-      if(!this.right) {
-        this.right = new BinaryTree(key, value);
-      } else {
-      this.right.insert(key, value);
-      }
-    } else if(this.key >= key) {
-      if(!this.left) {
-        this.left = new BinaryTree(key, value);
-      } else{
-      this.left.insert(key, value);
-      }
+    //if the tree is empty then this key being inserted is the root node of the tree
+    if (this.key == null) {
+        this.key = key;
+        this.value = value;
+    }
+
+    //If the tree already exist, then start at the root, 
+    //and compare it to the key you want to insert
+    // If the new key is less than the node's key 
+    //then the new node needs to live in the left-hand branch.
+    else if (key < this.key) {
+        //if the existing node does not have any left child, 
+        //meaning that if the `left` pointer is empty 
+        //then we can just instantiate and insert the new node 
+        //as the left child of that node, passing `this` as the parent.  
+        if (this.left == null) {
+            this.left = new BinaryTree(key, value, this);
+        }
+        //if the node has an existing left child, 
+        //then we recursively call the `insert` method 
+        //so the node is added further down the tree.
+        else {
+            this.left.insert(key, value);
+        }
+    }
+    //Similarly, if the new key is greater than the node's key 
+    //then you do the same thing, but on the right-hand side.
+    else {
+        if (this.right == null) {
+            this.right = new BinaryTree(key, value, this);
+        }
+        else {
+            this.right.insert(key, value);
+        }
     }
   }
 
+  // retrieve(key) {
+  //   if(!this.key) {
+  //     return null;
+  //   } else if (this.key === key) {
+  //     return this.value;
+  //   } else if (key <= this.key) {
+  //     if(!this.left) {
+  //       return null;
+  //     } else {
+  //       return this.left.retrieve(key);
+  //     }
+  //   } else {
+  //     if(!this.right) {
+  //       return null;
+  //     } else {
+  //       return this.right.retrieve(key);
+  //     }
+  //   }
+  // }
+
   retrieve(key) {
-    if(!this.key) {
-      return null;
-    } else if (this.key === key) {
-      return this.value;
-    } else if (key <= this.key) {
-      if(!this.left) {
-        return null;
-      } else {
-        return this.left.retrieve(key);
-      }
-    } else {
-      if(!this.right) {
-        return null;
-      } else {
-        return this.right.retrieve(key);
-      }
+    //if the item is found at the root then return that value
+    if (this.key == key) {
+        return this.value;
     }
-  }
+    //if the item you are looking for is less than the root 
+    //then follow the left child
+    //if there is an existing left child, 
+    //then recursively check its left and/or right child
+    //until you find the item.
+    else if (key < this.key && this.left) {
+        return this.left.find(key);
+    }
+    //if the item you are looking for is greater than the root 
+    //then follow the right child
+    //if there is an existing right child, 
+    //then recursively check its left and/or right child
+    //until you find the item.
+    else if (key > this.key && this.right) {
+        return this.right.find(key);
+    }
+    //You have search the treen and the item is not in the tree
+    else {
+        throw new Error('Key Error');
+    }
+}
 
   find(key) {
     if(!this.key) {
@@ -100,6 +165,23 @@ class BinaryTree {
           return this;
       }
       return this.left._findMin();
+  }
+
+  _findMax() {
+    if (!this.right) {
+        return this;
+    }
+    return this.right._findMax();
+  }
+
+ _findMaxLeft() {
+  if (this.left) {
+    return this.left._findMax();
+  } else if (this.parent.left) {
+    return this.parent.left._findMax();
+  } else {
+    return this.parent;
+  }
   }
 
   remove(key) {
@@ -168,6 +250,20 @@ function isBST(tree) {
   console.log(tree);
 }
 
+function thirdLargest(tree) {
+const maxValue = tree._findMax();
+
+tree.remove(maxValue.key);
+
+const maxValueTwo = tree._findMax();
+
+tree.remove(maxValueTwo.key);
+
+const maxValueThree = tree._findMax();
+
+return maxValueThree.value;
+}
+
 function main() {
   const tree = new BinaryTree();
 
@@ -179,14 +275,13 @@ function main() {
   tree.insert(2, 2);
   tree.insert(5, 5);
   tree.insert(7, 7);
-
-  tree.remove(2);
   
-  console.log(tree);
-  console.log('---------------------------');
-  // tree.remove(2);
-
-  return isBST(tree);
+  // console.log(tree);
+  // console.log('---------------------------');
+  // // tree.remove(2);
+  return thirdLargest(tree);
 }
+
+
 
 console.log(main());
