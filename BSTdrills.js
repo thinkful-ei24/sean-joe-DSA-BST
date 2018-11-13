@@ -139,6 +139,17 @@ class BinaryTree {
   }
 }
 
+function height(tree) {
+  if(!tree)
+    return -1;
+
+  return Math.max(height(tree.left), height(tree.right)) + 1;
+}
+
+function height2(tree) {
+  height(tree) - 1
+}
+
 function main() {
   const tree = new BinaryTree();
 
@@ -153,7 +164,7 @@ function main() {
 
   tree.remove(2);
 
-  return tree.retrieve(2);
+  return height(tree);
 }
 
 console.log(main());
