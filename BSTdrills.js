@@ -140,14 +140,32 @@ class BinaryTree {
 }
 
 function height(tree) {
-  if(!tree)
+  if(!tree) {
     return -1;
+  }
 
   return Math.max(height(tree.left), height(tree.right)) + 1;
 }
 
-function height2(tree) {
-  height(tree) - 1
+function isBST(tree) {
+  if(!tree) {
+    return false;
+  }
+
+  if(!tree.left && !tree.right) {
+    return true;
+  }
+
+  // check for BST property
+  if(tree.left && tree.left.key < tree.key) {
+    return isBST(tree.left);
+  }
+
+  if(tree.right && tree.right.key > tree.key) {
+    return isBST(tree.right);
+  }
+
+  console.log(tree);
 }
 
 function main() {
@@ -163,8 +181,12 @@ function main() {
   tree.insert(7, 7);
 
   tree.remove(2);
+  
+  console.log(tree);
+  console.log('---------------------------');
+  // tree.remove(2);
 
-  return height(tree);
+  return isBST(tree);
 }
 
 console.log(main());
