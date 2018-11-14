@@ -264,22 +264,51 @@ const maxValueThree = tree._findMax();
 return maxValueThree.value;
 }
 
+function balanced(tree) {
+  const left = height(tree.left);
+  const right = height(tree.right);
+
+  // return false if the height difference is greater than 1
+  if(Math.abs(left - right) > 1) {
+    return false;
+  }
+
+  if(tree.left) {
+    return balanced(tree.left);
+  }
+
+  if(tree.right) {
+    return balanced(tree.right);
+  }
+
+  if(!tree.left && !tree.right) {
+    return true;
+  }
+}
+
 function main() {
   const tree = new BinaryTree();
+  const data = [10, 5, 6, 4, 20, 7, 30, 31, 32, 33];
+  // tree.insert(3, 3);
+  // tree.insert(1, 1);
+  // tree.insert(4, 4);
+  // tree.insert(6, 6);
+  // tree.insert(9, 9);
+  // tree.insert(2, 2);
+  // tree.insert(5, 5);
+  // tree.insert(7, 7);
 
-  tree.insert(3, 3);
-  tree.insert(1, 1);
-  tree.insert(4, 4);
-  tree.insert(6, 6);
-  tree.insert(9, 9);
-  tree.insert(2, 2);
-  tree.insert(5, 5);
-  tree.insert(7, 7);
+
+  for(element of data) {
+    tree.insert(element, element);
+  }
+
+  console.log(tree);
   
   // console.log(tree);
   // console.log('---------------------------');
   // // tree.remove(2);
-  return thirdLargest(tree);
+  return balanced(tree);
 }
 
 
